@@ -1,0 +1,184 @@
+import java.util.*;
+
+import java.lang.Cloneable;
+import java.io.Serializable;
+
+public class ArrayList_Poole<O> extends AbstractList<O> implements List<O>, RandomAccess, Cloneable, Serializable{
+  //add to instance variables to trak numbrer of spots. "elements" or "filled"
+
+
+  //in method add all make sure to keep track of filled
+  
+  //instance variables
+  private O[] arr;
+  private int minCapacity = 0;
+  private int filled = 0;
+
+  //constructors
+  public ArrayList_Poole() {
+    super();
+    arr = (O[]) new Object[minCapacity];
+  }
+
+  public ArrayList_Poole(Collection<? extends O> c) {
+    super();
+    addAll(c);
+  }
+
+  public ArrayList_Poole(int initialCapacity){
+    super();
+    this.arr = (O[]) new Object[initialCapacity];
+  }
+
+  //implementing private constructor for subList method 
+  
+
+  //methods
+
+  public int size() {
+    return filled;
+  }
+
+  public O set(int i, O elem){
+    if (i>= size() || i<0) {
+      throw new IndexOutOfBoundsException("Index too large");
+    }
+    this.arr[i] = elem;
+    return elem;
+  }
+
+  public O get(int index){
+    if (index >= size() || index <0) {
+      throw new IndexOutOfBoundsException("Index too large");
+    }
+    return arr[index];
+  }
+
+  
+  public void clear(){
+    this.arr = (O[]) new Object[minCapacity];
+    filled = 0;
+  }
+
+  public boolean contains(Object o){ 
+    return indexOf(o) != -1;
+  }
+
+  //arr.equals compares two complete arrays rather than elements
+  public int indexOf(Object element){
+    for(int j = 0; j<= arr.length - 1; j++)
+      if(arr[j].equals((O) element))
+        return j;
+
+    return -1;
+  }
+
+  public int lastIndexOf(Object element){
+    for(int j = arr.length - 1; j>=0; j--)
+      if(arr[j].equals((O) element))
+        return j;
+
+    return -1;
+  }
+
+  public void ensureCapacity(int minCapacity){
+    if (arr.length >= minCapacity){
+      return;
+    }
+    O[] temp = (O[]) new Object[minCapacity]; 
+    for(int i=0; i<size(); i++){
+      temp[i] = arr[i];
+    }
+    this.arr = temp;
+  }
+  
+  public void trimToSize(){
+    O[] temp = (O[]) new Object[size()]; 
+    for(int i=0; i<size(); i++){
+      temp[i] = arr[i];
+    }
+    this.arr = temp;
+  }
+
+public boolean remove(Object e) {
+    for (int i = 0; i < filled; i++) {
+        if (Objects.equals(arr[i], e)) {
+            remove(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+  public O remove(int index){
+    if (index < 0 || index >= size()) {
+      throw new IndexOutOfBoundsException("Index out of bounds");
+    }
+
+    O removedElement = arr[index];
+
+    for (int i = index; i < size() - 1; i++) {
+      arr[i] = arr[i + 1];
+    }
+
+    arr[size() - 1] = null;
+    filled--;
+
+    return removedElement;
+  }
+  
+  public void removeRange(int i, int j){
+    if (i < 0 || j >= filled || i > j) {
+      throw new IndexOutOfBoundsException("Invalid index range");
+    }
+
+    int numToRemove = j - i + 1;
+
+    for (int k = i + numToRemove; k < filled; k++) {
+      arr[k - numToRemove] = arr[k];
+    }
+
+    for (int k = filled - numToRemove; k < filled; k++){
+      arr[k] = null;
+    }
+
+    filled -=numToRemove;
+  }
+
+  public boolean add(O e){
+    ensureCapacity(filled + 1);
+    arr[filled] = e;
+    filled++;
+    return true;
+  }
+
+  public void add(int index, O e){
+    if (index < 0 || index > filled) {
+      throw new IndexOutOfBoundsException("Index out of bounds");
+    }
+
+    ensureCapacity(filled + 1);
+
+    for (int i = filled; i > index; i--){
+      arr[i] = arr[i -1];
+    }
+
+    arr[index] = e;
+    filled++;
+  }
+
+  //subList method provided for in superclass
+
+  public Object[] toArray(){
+     Object[] ret = new Object[size()];
+
+    for(int i = 0; i > size(); i++){
+      ret[i] = arr[i];
+    }
+
+    return ret;
+
+  }  
+
+
+}
